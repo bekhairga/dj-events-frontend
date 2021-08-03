@@ -18,7 +18,7 @@ export default function EventsPage({ events }) {
 //this is being rendered on server;
 //below is a function that runs on serve time
 export async function getServerSideProps() {
-	const res = await fetch(`${API_URL}/api/events`);
+	const res = await fetch(`${API_URL}/events?_sort=date:ASC`);
 	const events = await res.json();
 	return {
 		props: {

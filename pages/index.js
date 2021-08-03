@@ -22,24 +22,24 @@ export default function HomePage({ events }) {
 }
 //this is being rendered on server;
 //below is a function that runs on serve time
-export async function getServerSideProps() {
-	const res = await fetch(`${API_URL}/api/events`);
-	const events = await res.json();
-	return {
-		props: {
-			events: events.slice(0, 3),
-		},
-	};
-}
-//below is a function that runs only at build time
-// export async function getStaticProps() {
-// 	const res = await fetch(`${API_URL}/api/events`);
+// export async function getServerSideProps() {
+// 	const res = await fetch(`${API_URL}/events`);
 // 	const events = await res.json();
 // 	return {
 // 		props: {
-// 			events,
-// //revalidate is when to rebuilt that page in a number of seconds when the props are changed
-// 			revalidate: 1,
+// 			events: events.slice(0, 3),
 // 		},
 // 	};
 // }
+//below is a function that runs only at build time
+export async function getStaticProps() {
+	const res = await fetch(`${API_URL}/events?_sort=date:ASC&_limit=3`);
+	const events = await res.json();
+	return {
+		props: {
+			events,
+			//revalidate is when to rebuilt that page in a number of seconds when the props are changed
+			revalidate: 1,
+		},
+	};
+}
