@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
 import EventItem from '@/components/EventItem';
-import { API_URL } from '@config/index';
+import { API_URL } from '@/config/index';
 //this is being rendered on client;
 export default function SearchPage({ events }) {
 	const router = useRouter();
