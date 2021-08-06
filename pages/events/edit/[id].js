@@ -9,7 +9,7 @@ import styles from '@/styles/Form.module.css';
 import moment from 'moment';
 import Image from 'next/image';
 import { FaImage } from 'react-icons/fa';
-
+import Modal from '@/components/Modal';
 export default function EditEventPage({ evt }) {
 	const [values, setValues] = useState({
 		name: evt.name,
@@ -24,6 +24,7 @@ export default function EditEventPage({ evt }) {
 	const [imagePreview, setImagePreview] = useState(
 		evt.image ? evt.image.formats.thumbnail.url : null
 	);
+	const [showModal, setShowModal] = useState(false);
 
 	const router = useRouter();
 
@@ -142,10 +143,16 @@ export default function EditEventPage({ evt }) {
 				</div>
 			)}
 			<div>
-				<button className='btn btn-secondary'>
+				<button
+					className='btn btn-secondary'
+					onClick={() => setShowModal(true)}
+				>
 					<FaImage /> Set Image
 				</button>
 			</div>
+			<Modal show={showModal} onClose={() => setShowModal(false)}>
+				IMAGE UPLOAD
+			</Modal>
 		</Layout>
 	);
 }
