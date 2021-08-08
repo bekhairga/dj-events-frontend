@@ -5,17 +5,20 @@ import { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
 import styles from '@/styles/AuthForm.module.css';
+import AuthContext from '@/context/AuthContext';
 export default function RegisterPage() {
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [passwordConfirm, setPasswordConfirm] = useState('');
+	const { register, error } = useContext(AuthContext);
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (password !== passwordConfirm) {
 			toast.error('Passwords do not match');
 			return;
 		}
+		register({ username, email, password });
 	};
 	return (
 		<Layout title={'User registration'}>
