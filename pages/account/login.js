@@ -13,9 +13,9 @@ export default function LoginPage() {
 	const { login, error } = useContext(AuthContext);
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(email, password);
 		login({ email, password });
 	};
+	useEffect(() => error && toast.error(error), [error]);
 	return (
 		<Layout title={'User login'}>
 			<div className={styles.auth}>
