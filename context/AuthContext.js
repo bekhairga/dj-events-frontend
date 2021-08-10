@@ -8,8 +8,22 @@ export const AuthProvider = ({ children }) => {
 	const router = useRouter();
 	useEffect(() => checkUserLoggedIn(), []);
 	//register user
-	const register = (user) => {
-		console.log(user);
+	const register = async (user) => {
+		const res = await fetch(`${NEXT_URL}/api/register`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(user),
+		});
+		const data = await res.json();
+		if (res.ok) {
+			setUser(data.user);
+			router.push('/account/dashboard');
+		} else {
+			setError(data.message);
+			setError(null);
+		}
 	};
 	//login user
 	const login = async ({ email: identifier, password }) => {
@@ -20,8 +34,7 @@ export const AuthProvider = ({ children }) => {
 			},
 			body: JSON.stringify({ identifier, password }),
 		});
-		const { data } = await res.json();
-		console.log(data);
+		const data = await res.json();
 		if (res.ok) {
 			setUser(data.user);
 			router.push('/account/dashboard');
