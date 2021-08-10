@@ -22,7 +22,7 @@ export default async (req, res) => {
 					path: '/',
 				})
 			);
-			res.status(200).json({ data });
+			res.status(200).json(data);
 		} else {
 			res
 				.status(data.statusCode)
