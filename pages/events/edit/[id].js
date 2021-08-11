@@ -11,7 +11,8 @@ import Image from 'next/image';
 import { FaImage } from 'react-icons/fa';
 import Modal from '@/components/Modal';
 import ImageUpload from '@/components/ImageUpload';
-export default function EditEventPage({ evt }) {
+import { parseCookies } from '@/helpers/index';
+export default function EditEventPage({ evt, token }) {
 	const [values, setValues] = useState({
 		name: evt.name,
 		performers: evt.performers,
@@ -40,10 +41,17 @@ export default function EditEventPage({ evt }) {
 		}
 		const res = await fetch(`${API_URL}/events/${evt.id}`, {
 			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
 			body: JSON.stringify(values),
 		});
 		if (!res.ok) {
+			if (res.status === 403 || res.status === 401) {
+				toast.error('Invalid token');
+				return;
+			}
 			toast.error('Something went wrong');
 			return;
 		} else {
@@ -158,18 +166,24 @@ export default function EditEventPage({ evt }) {
 				</button>
 			</div>
 			<Modal show={showModal} onClose={() => setShowModal(false)}>
-				<ImageUpload evtId={evt.id} imageUploaded={imageUploaded} />
+				<ImageUpload
+					evtId={evt.id}
+					imageUploaded={imageUploaded}
+					token={token}
+				/>
 			</Modal>
 		</Layout>
 	);
 }
 
-export async function getServerSideProps({ params: { id } }) {
+export async function getServerSideProps({ req, params: { id } }) {
 	const res = await fetch(`${API_URL}/events/${id}`);
+	const { token } = parseCookies(req);
 	const evt = await res.json();
 	return {
 		props: {
 			evt,
+			token,
 		},
 	};
 }

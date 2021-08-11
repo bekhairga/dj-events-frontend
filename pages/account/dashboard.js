@@ -3,9 +3,34 @@ import { parseCookies } from '@/helpers/index';
 import { API_URL } from '@/config/index';
 import styles from '@/styles/Dashboard.module.css';
 import DashboardEvent from '@/components/DashboardEvent';
-export default function DashboardPage({ events }) {
-	const deleteEvent = (id) => {
-		console.log(id);
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/router';
+export default function DashboardPage({ events, token }) {
+	const router = useRouter();
+	const deleteEvent = async (id) => {
+		if (confirm('Are you sure?')) {
+			const res = await fetch(`${API_URL}/events/${id}`, {
+				method: 'DELETE',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			const data = await res.json();
+			if (!res.ok) {
+				if (res.status === 401 || res.status === 403) {
+					toast.error('Unauthorized');
+					return;
+				}
+				toast.error(data.message);
+				return;
+			} else {
+				toast.success('DELETED');
+				setTimeout(() => {
+					router.push(`/account/dashboard`);
+				}, 1000);
+			}
+		}
 	};
 	return (
 		<Layout title='Dashboard'>
@@ -29,6 +54,6 @@ export async function getServerSideProps({ req }) {
 	});
 	const events = await res.json();
 	return {
-		props: { events },
+		props: { events, token },
 	};
 }

@@ -9,26 +9,11 @@ import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 export default function EventPage({ evt }) {
 	const router = useRouter();
-	const deleteEvent = async () => {
-		if (confirm('Are you sure?')) {
-			const res = await fetch(`${API_URL}/events/${evt.id}`, {
-				method: 'DELETE',
-			});
-			const data = await res.json();
-			if (!res.ok) {
-				toast.error(data.message);
-			} else {
-				toast.success('DELETED');
-				setTimeout(() => {
-					router.push('/events');
-				}, 1000);
-			}
-		}
-	};
+
 	return (
 		<Layout>
 			<div className={styles.event}>
-				<div className={styles.controls}>
+				{/* <div className={styles.controls}>
 					<Link href={`/events/edit/${evt.id}`}>
 						<a>
 							<FaPencilAlt />
@@ -39,7 +24,7 @@ export default function EventPage({ evt }) {
 						<FaTimes />
 						Delete
 					</a>
-				</div>
+				</div> */}
 				<span>
 					{new Date(evt.date).toLocaleDateString('en-US')} at {evt.time}
 				</span>
