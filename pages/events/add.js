@@ -6,8 +6,8 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { API_URL } from '@/config/index';
 import styles from '@/styles/Form.module.css';
-
-export default function AddEvent() {
+import { parseCookies } from '@/helpers/index';
+export default function AddEvent({ token }) {
 	const [values, setValues] = useState({
 		name: '',
 		performers: '',
@@ -30,10 +30,17 @@ export default function AddEvent() {
 		}
 		const res = await fetch(`${API_URL}/events`, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
 			body: JSON.stringify(values),
 		});
 		if (!res.ok) {
+			if (res.status === 403 || res.status === 401) {
+				toast.error('No token included');
+				return;
+			}
 			toast.error('Something went wrong');
 			return;
 		} else {
@@ -127,4 +134,12 @@ export default function AddEvent() {
 			</form>
 		</Layout>
 	);
+}
+export async function getServerSideProps({ req }) {
+	const { token } = parseCookies(req);
+	return {
+		props: {
+			token,
+		},
+	};
 }
